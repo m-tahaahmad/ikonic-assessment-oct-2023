@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use JWTAuth;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,15 +24,15 @@ class UserController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        $token = Auth::setTTL(120)->attempt($credentials);
+        $token = JWTAuth::attempt($credentials);
         if (!$token) {
             return response([
                 'status' => 'error',
-                'message' => 'Unauthorized',
+                'message' => 'Incorrect email or password',
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = JWTAuth::user();
         return response([
             'status' => 'success',
             'user' => $user,
@@ -70,22 +71,10 @@ class UserController extends Controller
 
     public function logout()
     {
-        Auth::logout();
+        JWTAuth::invalidate();
         return response([
             'status' => 'success',
             'message' => 'Successfully logged out',
-        ]);
-    }
-
-    public function refresh()
-    {
-        return response([
-            'status' => 'success',
-            'user' => Auth::user(),
-            'authorization' => [
-                'token' => Auth::refresh(),
-                'type' => 'bearer',
-            ]
         ]);
     }
 }

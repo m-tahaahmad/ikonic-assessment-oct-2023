@@ -3,10 +3,12 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Exception;
+use JWTAuth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 
-class Authenticate
+class Authenticate extends BaseMiddleware
 {
     /**
      * Get the path the user should be redirected to when they are not authenticated.
@@ -14,11 +16,18 @@ class Authenticate
     public function handle(Request $request, Closure $next)
     {
         try {
-            Auth::userOrFail();
-        } catch (\PHPOpenSourceSaver\JWTAuth\Exceptions\UserNotDefinedException $e) {
-            return response(['status' => 'error', 'message' => 'Unauthorized'], 401);
+            JWTAuth::parseToken()->authenticate();
+        } catch (Exception $e) {
+            if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
+                return response(['status' => 'error', 'message' => 'Token is Invalid'], 401);
+            } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
+                return response(['status' => 'error', 'message' => 'Token is Expired'], 401);
+            } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenBlacklistedException) {
+                return response(['status' => 'error', 'message' => 'Token not Exists'], 401);
+            } else {
+                return response(['status' => 'error', 'message' => 'Authorization Token not found'], 401);
+            }
         }
-
         return $next($request);
     }
 }
