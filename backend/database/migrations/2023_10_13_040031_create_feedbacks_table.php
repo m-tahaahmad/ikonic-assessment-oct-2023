@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->text('category');
+            $table->integer('vote_up')->nullable();
+            $table->integer('vote_down')->nullable();
             $table->timestamps();
         });
     }
