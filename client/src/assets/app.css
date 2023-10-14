@@ -1,0 +1,12 @@
+a {
+  text-decoration: none;
+  color: #222;
+}
+#login a,
+#signup a {
+  color: #fff;
+}
+#login a:hover,
+#signup a:hover {
+  text-decoration: underline;
+}
