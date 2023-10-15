@@ -12,4 +12,9 @@ class FeedbackComment extends Model
     protected $fillable = [
         'feedback_id', 'comment_id'
     ];
+
+    public function comments()
+    {
+        return $this->hasOne(Comment::class, 'id', 'comment_id');
+    }
 }

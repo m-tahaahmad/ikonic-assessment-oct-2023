@@ -12,4 +12,11 @@ class UserFeedback extends Model
     protected $fillable = [
         'user_id', 'feedback_id'
     ];
+
+    protected $table = 'user_feedbacks';
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }

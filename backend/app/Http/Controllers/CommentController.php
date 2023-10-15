@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\FeedbackComment;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -21,7 +23,7 @@ class CommentController extends Controller
     public function show($id)
     {
         try {
-            $data = Comment::findOrFail($id);
+            $data = Comment::with('user')->findOrFail($id);
             return response(['status' => 'success', 'message' => $data]);
         } catch (Exception $e) {
             return response(['status' => 'error', 'message' => $e->getMessage()], 500);
@@ -32,7 +34,10 @@ class CommentController extends Controller
     {
         try {
             $data = $request->all();
-            $data = Comment::create($data);
+            $feedbackId = $data['data']['feedback_id'];
+            $data['data']['comment_at'] = date('Y-m-d');
+            $data = Comment::create($data['data']);
+            FeedbackComment::create(['feedback_id' => $feedbackId, 'comment_id' => $data->id]);
             return response(['status' => 'success', 'message' => $data], 201);
         } catch (Exception $e) {
             return response(['status' => 'error', 'message' => $e->getMessage()], 500);
@@ -42,8 +47,9 @@ class CommentController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            $data = $request->all();
             $comment = Comment::findOrFail($id);
-            $comment = $comment->fill($request->all())->save();
+            $comment = $comment->fill($data['data'])->save();
             return response(['status' => 'success', 'message' => $comment]);
         } catch (Exception $e) {
             return response(['status' => 'error', 'message' => $e->getMessage()], 500);

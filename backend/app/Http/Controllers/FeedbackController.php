@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Feedback;
+use App\Models\UserFeedback;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -11,7 +12,7 @@ class FeedbackController extends Controller
     public function index()
     {
         try {
-            $data = Feedback::all();
+            $data = Feedback::with('userFeedback.user')->get();
             return response(['status' => 'success', 'message' => $data]);
         } catch (Exception $e) {
             return response(['status' => 'error', 'message' => $e->getMessage()], 500);
@@ -21,7 +22,7 @@ class FeedbackController extends Controller
     public function show($id)
     {
         try {
-            $data = Feedback::findOrFail($id);
+            $data = Feedback::with('userFeedback.user', 'commentFeedback.comments.user')->findOrFail($id);
             return response(['status' => 'success', 'message' => $data]);
         } catch (Exception $e) {
             return response(['status' => 'error', 'message' => $e->getMessage()], 500);
@@ -32,7 +33,9 @@ class FeedbackController extends Controller
     {
         try {
             $data = $request->all();
-            $data = Feedback::create($data);
+            $userId = $data['data']['user_id'];
+            $data = Feedback::create($data['data']);
+            UserFeedback::create(['user_id' => $userId, 'feedback_id' => $data->id]);
             return response(['status' => 'success', 'message' => $data], 201);
         } catch (Exception $e) {
             return response(['status' => 'error', 'message' => $e->getMessage()], 500);
@@ -42,8 +45,9 @@ class FeedbackController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            $data =$request->all();
             $feedback = Feedback::findOrFail($id);
-            $feedback = $feedback->fill($request->all())->save();
+            $feedback = $feedback->fill($data['data'])->save();
             return response(['status' => 'success', 'message' => $feedback]);
         } catch (Exception $e) {
             return response(['status' => 'error', 'message' => $e->getMessage()], 500);

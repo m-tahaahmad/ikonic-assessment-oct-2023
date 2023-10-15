@@ -38,6 +38,8 @@
 </template>
 
 <script>
+import router from "@/router";
+
 export default {
   name: "LogIn",
   components: {},
@@ -54,7 +56,13 @@ export default {
       this.$store
         .dispatch("auth/login", { email, password })
         .then((response) => {
-          console.log(response);
+          if (response.status == "success") {
+            localStorage.setItem("token", response.authorization.token);
+            localStorage.setItem("uid", response.user.id);
+            localStorage.setItem("name", response.user.name);
+            localStorage.setItem("permissions", response.user.permissions);
+            window.location.href = "http://localhost:8080/feedback";
+          }
         })
         .catch((e) => {
           console.log(e);
