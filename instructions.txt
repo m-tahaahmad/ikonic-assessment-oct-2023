@@ -1,5 +1,13 @@
+Backend setup
 composer install or composer update
 php artisan key:generate
 php artisan jwt:secret
 php artisan migrate
 php artisan db:seed
+
+Login: 
+email: super@admin.com
+password: 123
+
+Client setup
+npm install or npm update
