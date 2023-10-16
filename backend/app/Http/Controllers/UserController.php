@@ -74,34 +74,7 @@ class UserController extends Controller
             'user' => $user
         ], 201);
     }
-
-    public function update(Request $request, $id)
-    {
-        $data = $request->all();
-        $validator = Validator::make($data['data'], [
-            'type' => 'required|string',
-            'name' => 'required|string',
-            'email' => 'required|string|unique:users|email',
-            'password' => 'required|string',
-            'permissions' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response(['status' => 'error', 'message' => $validator->messages()]);
-        }
-
-        $data['data']['password'] = Hash::make($data['data']['password']);
-
-        $user = User::findOrFail($id);
-        $user->fill($data['data'])->save();
-
-        return response([
-            'status' => 'success',
-            'message' => 'User created successfully',
-            'user' => $user
-        ], 201);
-    }
-
+    
     public function logout()
     {
         JWTAuth::invalidate();

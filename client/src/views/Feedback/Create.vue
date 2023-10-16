@@ -41,6 +41,18 @@
                   :config="editorConfig"
                 ></ckeditor>
               </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  v-model="is_comment"
+                  value="1"
+                  id="flexCheckDefault"
+                />
+                <label class="form-check-label" for="flexCheckDefault">
+                  Allow comments
+                </label>
+              </div>
               <div class="d-grid col-6 mx-auto">
                 <button type="submit" class="btn btn-sm btn-primary">
                   Save
@@ -74,6 +86,7 @@ export default {
       title: "",
       category: "",
       description: "",
+      is_comment: true,
     };
   },
   methods: {
@@ -83,6 +96,7 @@ export default {
         category: this.category,
         description: this.description,
         user_id: localStorage.getItem("uid"),
+        is_comment: this.is_comment,
       };
       this.$store
         .dispatch("feedback/store", { data })
