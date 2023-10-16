@@ -19,9 +19,9 @@ class UserSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'super@admin.com',
             'password' => Hash::make('123'),
-            'permissions' => '[]'
+            'permissions' => '["users"]'
         ];
 
-        User::create($user);
+        User::updateOrCreate(['email' => $user['email']], $user);
     }
 }

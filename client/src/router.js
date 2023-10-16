@@ -6,6 +6,7 @@ import SignUp from "@/views/Auth/SignUp";
 import FeedbackIndex from "@/views/Feedback/Index";
 import FeedbackCreate from "@/views/Feedback/Create";
 import FeedbackShow from "@/views/Feedback/Show";
+import User from "@/views/User/Index";
 
 // componenst
 import Body from "@/components/body";
@@ -36,6 +37,16 @@ const routes = [
       {
         path: "/feedback/:id",
         component: FeedbackShow,
+      },
+    ],
+  },
+  {
+    path: "/user",
+    component: Body,
+    children: [
+      {
+        path: "/user",
+        component: User,
       },
     ],
   },

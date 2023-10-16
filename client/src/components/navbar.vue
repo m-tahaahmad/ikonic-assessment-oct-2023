@@ -5,14 +5,25 @@
         <li>
           <router-link to="/feedback">Feedback</router-link>
         </li>
-        <li>
-          <router-link to="/feedback">Users</router-link>
+        <li v-if="permissions && permissions.includes('users')">
+          <router-link to="/user">Users</router-link>
         </li>
       </ul>
     </div>
   </nav>
 </template>
-<script></script>
+<script>
+export default {
+  data() {
+    return {
+      permissions: null,
+    };
+  },
+  mounted() {
+    this.permissions = JSON.parse(localStorage.getItem("permissions"));
+  },
+};
+</script>
 
 <style scoped>
 nav {

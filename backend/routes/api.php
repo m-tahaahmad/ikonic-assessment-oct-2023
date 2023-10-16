@@ -18,6 +18,7 @@ Route::middleware('jwt.verify')->group(function () {
     Route::post('/user/logout', [\App\Http\Controllers\UserController::class, 'logout']);
     Route::apiResource('/feedback', \App\Http\Controllers\FeedbackController::class);
     Route::apiResource('/comment', \App\Http\Controllers\CommentController::class);
+    Route::apiResource('/user', \App\Http\Controllers\UserController::class);
 });
 
 Route::post('/user/register', [\App\Http\Controllers\UserController::class, 'register']);
